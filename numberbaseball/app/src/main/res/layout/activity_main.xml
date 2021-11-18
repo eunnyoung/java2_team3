@@ -9,5 +9,67 @@
     android:weightSum="100"
     android:background="@drawable/background">
 
+    <!-- 세로 길이의 60%만 스크롤뷰로 사용(숫자 눌렀을 때 결과값 부분) -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="60"
+        android:layout_margin="15dp"
+        android:background="@drawable/baseball">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="1. [1 2 4] - S : 1 / B : 2"
+            android:textColor="#2B2B2B"
+            android:textSize="23sp"
+            android:textStyle="bold"
+            android:background="#99FFFFFF"/>
+    </ScrollView>
+
+    <!-- 숫자 선택시 어느 숫자를 택했는지 보여주는 부분-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="13"
+        android:orientation="horizontal"
+        android:weightSum="100"
+        android:layout_margin="15dp"
+        android:gravity="center">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="25"
+            android:background="@drawable/ball"
+            android:text="1"
+            android:textSize="60sp"
+            android:gravity="center"
+            android:textColor="#000000"
+            android:layout_margin="5dp"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="25"
+            android:background="@drawable/ball"
+            android:text="1"
+            android:textSize="60sp"
+            android:gravity="center"
+            android:textColor="#000000"
+            android:layout_margin="5dp"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="25"
+            android:background="@drawable/ball"
+            android:text="1"
+            android:textSize="60sp"
+            android:gravity="center"
+            android:textColor="#000000"
+            android:layout_margin="5dp"/>
+
+    </LinearLayout>
 
 </LinearLayout>
