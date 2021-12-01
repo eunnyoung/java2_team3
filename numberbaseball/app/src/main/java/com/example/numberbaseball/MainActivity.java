@@ -2,6 +2,10 @@ package com.example.numberbaseball;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.SoundPool;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -17,6 +21,9 @@ public class MainActivity extends AppCompatActivity {
     TextView resultTextView;
     ScrollView scrollView;
 
+    SoundPool soundPool;
+    int[] buttonSound = new int[5];
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +34,8 @@ public class MainActivity extends AppCompatActivity {
         resultTextView = findViewById(R.id.result_text_view);
         scrollView = findViewById(R.id.scroll_view);
     }
+
+    BackSpaceButton back = new BackSpaceButton();
 
     // backSpaceButton 클릭 시의 동작을 정의한다.
     backSpaceButton.setOnClickListener(new View.OnClickListener(){
@@ -40,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
                 numButton[buttonEnableCount].setEnabled(true);
                 inputTextView[inputTextCount-1].setText("");
                 inputTextCount--;
+                soundPool.play(buttonSound[3], leftVolume:1, rightVoluem:1, priority:1, loop:0, rate:1);
             // 입력된 숫자가 없을 경우, 다음과 같은 text를 출력한다
             } else {
                 Toast.makeText(getApplicationContext(), text: "숫자를 입력해 주세요", Toast.LENGTH_SHORT).show();
@@ -64,16 +74,18 @@ public class MainActivity extends AppCompatActivity {
                 }
                 int[] countCheck = new int[2];
                 countCheck = getCountCheck(comNumbers.userNumbers);
-                Log.e( tag: "hitButton", msg: "countCheck = S : " + countCheck[0] + " B : " + countCheck[1]);
+                Log.e(tag: "hitButton", msg: "countCheck = S : " + countCheck[0] + " B : " + countCheck[1]);
 
                 String resultCount;
 
                 if(countCheck[0] == 3){
                     resultCount = "1 [" + userNumbers[0] + " " + userNumbers[1] + " " + userNumbers[2]
                             + "] 아웃입니다.";
+                    soundPool.play(buttonSound[0], leftVolume:1, rightVoluem:!, priority:1, loop:0, rate:1);
                 } else {
                     resultCount = "1 [" + userNumbers[0] + " " + userNumbers[1] + " " + userNumbers[2]
                             + "] s: " + countCheck[0] + " B : " + countCheck[1];
+                    soundPool.play(buttonSound[4], leftVolume:1, rightVoluem:!, priority:1, loop:0, rate:1);
                 }
                 if(hitCount == 1){
                     resultTextView.setText(resultCount + "\n");
@@ -88,14 +100,11 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 ScrollView.fullScroll(View.FOCUS_DOWN);
-                inputTextCount = 0;
 
-                for(TextView textView : inputTextView){
-                    textView.setText("");
-                }
-                for(Button button : numButton){
-                    button.setEnabled(true);
-                }
+                backSpaceClick();
+                backspaceClick();
+                backspaceClick();
+
             }
         }
     });
@@ -103,14 +112,44 @@ public class MainActivity extends AppCompatActivity {
     private int[] getCountCheck(int[] comNumbers, int[] userNumbers){
         int [] setCount = new int[2];
         for (int i = 0; i < comNumbers.length; i++){
-            for(int j =0; j < userNumbers.length; j++){
-                if(comNumbers[i] == userNumbers[j] && i == j){
-                    setCount[0]++;
-                } else if(comNumbers[i] == userNumbers[j] && i != j){
-                    setCount[1]++;
+            for(int j = 0; j < userNumbers.length; j++){
+                // comNumbers[i] 와 userNumbers[j] 가 다르면 조건문을 실행하지 않고 빠져나간다.
+                if(comNumbers[i] == userNumbers[j]){
+                    if(i == j){
+                        setCount[0]++;
+                    }else {
+                        setCount[1]++;
+                    }
                 }
             }
         }
         return setCount;
+    }
+
+    protected void onStart(){
+        super.onStart();
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_GAME)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .build();
+
+            soundPool = new SoundPool.Builder()
+                    .setAudioAttributes(audioAttributes)
+                    .setMaxStreams(6)
+                    .build();
+        } else {
+            soundPool = new SoundPool(maxStreams:6, AudioManager.STREAM_MUSIC, srcQuality:0);
+        }
+
+        for (int i = 0; i < buttonSound.length ; i++){
+            buttonSound[i] = soundPool.load(getApplicationContext(), R.raw.button1 + i, priority: 1);
+        }
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        soundPool.release();
     }
 }
