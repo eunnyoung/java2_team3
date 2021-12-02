@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 눌렸을 때-->
+    <item android:state_pressed="true" android:drawable="@drawable/ic_brightness_1_click_24dp"/>
+    <!-- 기본값 -->
+    <item android:state_window_focused="false" android:state_enabled="true" android:drawable="@drawable/ic_brightness_1_default_24dp"/>
+    <!-- 이미 선택했을 때-->
+    <item android:state_window_focused="false" android:state_enabled="false" android:drawable="@drawable/ic_brightness_1_inactive_24dp"/>
+    <item android:state_window_focused="true" android:state_enabled="true" android:drawable="@drawable/ic_brightness_1_default_24dp"/>
+
+
+</selector>
