@@ -3,10 +3,16 @@ package com.example.numberbaseball;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import java.util.Random;
+
 public class MainActivity extends AppCompatActivity {
+
+    //랜덤으로 정해진 정수 3개 넣을 수 있는 배열.
+    int[] comNumbers = new int[3];
 
     // 숫자 맞추기 시도 첫번째.
     int hitCount = 1;
@@ -21,11 +27,32 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        comNumbers = getComNumbers();
 
         backSpaceButton = findViewById(R.id.back_space_button);
         hitButton = findViewById(R.id.hit_button);
         resultTextView = findViewById(R.id.result_text_view);
         scrollView = findViewById(R.id.scroll_view);
+    }
+
+    public int[] getComNumbers() {
+        int[] setComNumbers = new int[3];
+        //for문을 돌려서 랜덤 숫자 3개를 setComNumbers에 넣기
+        for (int i = 0; i < setComNumbers.length; i++) {
+            //i->0, 1, 2일때 랜덤 숫자 생성
+            // 0부터 9까지의 숫자가 setComNumbers에 들어감
+            setComNumbers[i] = new Random().nextInt(10);
+            //배열에 같은 숫자가 들어가면 안 되기 때문에
+            for (int j = 0; i < i; i++) {
+                if (setComNumbers[i] == setComNumbers[j]) {
+                    //만약에 같으면 랜덤숫자를 다시 받아야 하기 때문에 for문을 다시 돌게끔 함
+                    i--;
+                    break;
+                }
+            }
+        }
+        Log.e("setComNumbers", "setComNumbers = " + setComNumbers[0] + ", " + setComNumbers[1] + ", " + setComNumbers[2]);
+        return setComNumbers;
     }
 
     // backSpaceButton 클릭 시의 동작을 정의한다.
