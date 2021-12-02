@@ -103,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
     // backSpaceButton 클릭 시의 동작을 정의한다.
     backSpaceButton.setOnClickListener(new View.OnClickListener(){
         @Override
-        Public void onClick(View view){
+        public void onClick(View view){
             // backSpaceButton 이 실행될 조건을 설정한다. // 입력된 숫자가 있을 경우
             if(inputTextCount > 0){
                 // Text를 int로 형변환한다.
@@ -112,10 +112,10 @@ public class MainActivity extends AppCompatActivity {
                 numButton[buttonEnableCount].setEnabled(true);
                 inputTextView[inputTextCount-1].setText("");
                 inputTextCount--;
-                soundPool.play(buttonSound[3], leftVolume:1, rightVoluem:1, priority:1, loop:0, rate:1);
+                soundPool.play(buttonSound[3], 1, 1, 1, 0, 1);
             // 입력된 숫자가 없을 경우, 다음과 같은 text를 출력한다
             } else {
-                Toast.makeText(getApplicationContext(), text: "숫자를 입력해 주세요", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "숫자를 입력해 주세요", Toast.LENGTH_SHORT).show();
             }
         }
     });
@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
             // inputTextCount 이 실행될 조건을 설정한다. // 선택된 숫자가 3개 미만일 경우
             if(inputTextCount < 3){
                 // "숫자를 입력해 주세요." 를 출력한다.
-                Toast.makeText(getApplicationContext(), text: "숫자를 입력해 주세요", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "숫자를 입력해 주세요", Toast.LENGTH_SHORT).show();
             // 선택된 숫자가 3개 이상일 경우
             } else{
                 int[] userNumbers = new int[3];
@@ -137,18 +137,18 @@ public class MainActivity extends AppCompatActivity {
                 }
                 int[] countCheck = new int[2];
                 countCheck = getCountCheck(comNumbers.userNumbers);
-                Log.e(tag: "hitButton", msg: "countCheck = S : " + countCheck[0] + " B : " + countCheck[1]);
+                Log.e("hitButton", "countCheck = S : " + countCheck[0] + " B : " + countCheck[1]);
 
                 String resultCount;
 
                 if(countCheck[0] == 3){
                     resultCount = "1 [" + userNumbers[0] + " " + userNumbers[1] + " " + userNumbers[2]
                             + "] 아웃입니다.";
-                    soundPool.play(buttonSound[0], leftVolume:1, rightVoluem:!, priority:1, loop:0, rate:1);
+                    soundPool.play(buttonSound[0], 1, 1, 1, 0, 1);
                 } else {
                     resultCount = "1 [" + userNumbers[0] + " " + userNumbers[1] + " " + userNumbers[2]
                             + "] s: " + countCheck[0] + " B : " + countCheck[1];
-                    soundPool.play(buttonSound[4], leftVolume:1, rightVoluem:!, priority:1, loop:0, rate:1);
+                    soundPool.play(buttonSound[4], 1, 1, 1, 0, 1);
                 }
                 if(hitCount == 1){
                     resultTextView.setText(resultCount + "\n");
@@ -202,11 +202,11 @@ public class MainActivity extends AppCompatActivity {
                     .setMaxStreams(6)
                     .build();
         } else {
-            soundPool = new SoundPool(maxStreams:6, AudioManager.STREAM_MUSIC, srcQuality:0);
+            soundPool = new SoundPool(6, AudioManager.STREAM_MUSIC, 0);
         }
 
         for (int i = 0; i < buttonSound.length ; i++){
-            buttonSound[i] = soundPool.load(getApplicationContext(), R.raw.button1 + i, priority: 1);
+            buttonSound[i] = soundPool.load(getApplicationContext(), R.raw.button1 + i, 1);
         }
     }
 
