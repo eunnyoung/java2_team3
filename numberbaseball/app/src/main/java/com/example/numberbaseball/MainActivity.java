@@ -26,10 +26,10 @@ public class MainActivity extends AppCompatActivity {
 
     //랜덤 숫자를 보여주는 텍스트뷰이다.
     TextView[] inputTextView = new TextView[3];
-    Button[] numButton = new Button[10];
+    Button[] btnNum = new Button[10];
 
-    ImageButton backSpaceButton;
-    ImageButton hitButton;
+    ImageButton btnBackSpace;
+    ImageButton btnHit;
 
     TextView resultTextView;
     ScrollView scrollView;
@@ -47,44 +47,44 @@ public class MainActivity extends AppCompatActivity {
             inputTextView[i] = findViewById(R.id.input_text_view_0 + i);
         }
 
-        for (int i = 0; i < numButton.length; i++) {
-            numButton[i] = findViewById(R.id.num_button_0 + i);
+        for (int i = 0; i < btnNum.length; i++) {
+            btnNum[i] = findViewById(R.id.num_button_0 + i);
         }
 
-        backSpaceButton = findViewById(R.id.back_space_button);
-        hitButton = findViewById(R.id.hit_button);
+        btnBackSpace = findViewById(R.id.back_space_button);
+        btnHit = findViewById(R.id.hit_button);
         resultTextView = findViewById(R.id.result_text_view);
         scrollView = findViewById(R.id.scroll_view);
 
-        // for문이 반복 되면서 numButton을 getNumButton으로 던진다.
-        for(Button getNumButton : numButton) {
-            getNumButton.setOnClickListener(new View.OnClickListener() {
+        // for문이 반복 되면서 btnNum을 getbtnNum으로 던진다.
+        for(Button getbtnNum : btnNum) {
+            getbtnNum.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    numButtonClick(view);
+                    btnNumClick(view);
                 }
             });
         }
 
-        // backSpaceButton 클릭 시의 동작을 정의한다.
-        backSpaceButton.setOnClickListener(new View.OnClickListener(){
+        // btnBackSpace 클릭 시의 동작을 정의한다.
+        btnBackSpace.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                backSpaceClick();
+                btnBackSpaceClick();
             }
         });
 
-        // hitButton 클릭 시의 동작을 정의한다.
-        hitButton.setOnClickListener(new View.OnClickListener(){
+        // btnHit 클릭 시의 동작을 정의한다.
+        btnHit.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                hitButtonClick();
+                btnHitClick();
             }
         });
     }
 
-    // hitButton 클릭 시 실행할 메소드이다.
-    private void hitButtonClick(){
+    // btnHit 클릭 시 실행할 메소드이다.
+    private void btnHitClick(){
         // 선택된 숫자가 3개 미만일 경우에 실행할 조건문이다.
         if (inputTextCount < 3) {
             // "숫자를 입력해 주세요." 를 출력한다.
@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
 
             int[] countCheck = new int[2];
             countCheck = getCountCheck(comNumbers, userNumbers);
-            Log.e("hitButton", "countCheck = S : " + countCheck[0] + " B : " + countCheck[1]);
+            Log.e("btnHit", "countCheck = S : " + countCheck[0] + " B : " + countCheck[1]);
 
             String resultCount = getCountString(userNumbers, countCheck);
 
@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
             scrollView.fullScroll(View.FOCUS_DOWN);
 
             for (int i =0; i< inputTextView.length; i++){
-                backSpaceClick();
+                btnBackSpaceClick();
             }
 
             inputTextCount = 0;
@@ -143,13 +143,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // backSpace 클릭 시 실행할 메소드이다.
-    private void backSpaceClick(){
+    private void btnBackSpaceClick(){
         // 입력된 숫자가 있을 경우에 실행할 조건문이다.
         if(inputTextCount > 0){
             // Text를 int로 형변환한다.
             int buttonEnableCount = Integer.parseInt(inputTextView[inputTextCount-1].getText().toString());
             // 숫자버튼이 선택되기 이전 상태로 돌아간다.
-            numButton[buttonEnableCount].setEnabled(true);
+            btnNum[buttonEnableCount].setEnabled(true);
             inputTextView[inputTextCount-1].setText("");
             inputTextCount--;
             soundPool.play(buttonSound[3], 1, 1, 1, 0, 1);
@@ -159,8 +159,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // numButton 클릭 시 실행할 메소드이다.
-    private void numButtonClick(View view) {
+    // btnNum 클릭 시 실행할 메소드이다.
+    private void btnNumClick(View view) {
         if(inputTextCount < 3) {
             Button button = findViewById(view.getId());
             //버튼에 있는 숫자값을 받아온다.
