@@ -262,6 +262,7 @@ public class MainActivity extends AppCompatActivity {
      * 리소스를 해제하는 메소드이다.
      * */
     @Override
+    // 리소스를 해제하는 메소드이다.
     protected void onStop(){
         super.onStop();
         soundPool.release();
