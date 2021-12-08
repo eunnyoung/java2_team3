@@ -1,7 +1,11 @@
+/**
+* 프로젝트 참여자: 서은영, 이규연
+* 프로젝트 주제: 안드로이트 스튜디오 프로그램을 이용한 숫자야구게임 제작
+* */
+
 package com.example.numberbaseball;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -14,17 +18,16 @@ import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    //랜덤으로 정해진 정수 3개 넣을 수 있는 배열이다.
+    // 랜덤으로 정해진 정수 3개 넣을 수 있는 배열이다.
     int[] comNumbers = new int[3];
     int inputTextCount = 0;
     int hitCount = 1;
 
-    //랜덤 숫자를 보여주는 텍스트뷰이다.
+    // 랜덤 숫자 3개를 보여주는 텍스트뷰이다.
     TextView[] inputTextView = new TextView[3];
     Button[] btnNum = new Button[10];
 
@@ -37,6 +40,9 @@ public class MainActivity extends AppCompatActivity {
     SoundPool soundPool;
     int[] buttonSound = new int[5];
 
+    /**
+    * 버튼들이 클릭되었을 때 실행할 메소드들을 지정한 메소드이다.
+    * */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,13 +89,14 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // btnHit 클릭 시 실행할 메소드이다.
+    /**
+    * btnHit 클릭 시 실행할 메소드이다.
+    * */
     private void btnHitClick(){
         // 선택된 숫자가 3개 미만일 경우에 실행할 조건문이다.
         if (inputTextCount < 3) {
-            // "숫자를 입력해 주세요." 를 출력한다.
             Toast.makeText(getApplicationContext(), "숫자를 입력해 주세요", Toast.LENGTH_SHORT).show();
-        // 선택된 숫자가 3개 이상일 경우에 실행할 조건문이다.
+        // 선택된 숫자가 3개일 경우에 실행할 조건문이다.
         } else {
             int[] userNumbers = new int[3];
 
@@ -126,7 +133,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // 입력된 값과 정답 값을 비교한 결과를 텍스트로 출력하는 메소드이다.
+    /**
+    * 입력된 값과 정답 값을 비교한 결과를 텍스트로 출력하는 메소드이다.
+    * */
     private String getCountString(int[] userNumbers, int[] countCheck){
         String resultCount;
 
@@ -142,7 +151,9 @@ public class MainActivity extends AppCompatActivity {
         return resultCount;
     }
 
-    // backSpace 클릭 시 실행할 메소드이다.
+    /**
+    * backSpace 클릭 시 실행할 메소드이다.
+    * */
     private void btnBackSpaceClick(){
         // 입력된 숫자가 있을 경우에 실행할 조건문이다.
         if(inputTextCount > 0){
@@ -153,30 +164,34 @@ public class MainActivity extends AppCompatActivity {
             inputTextView[inputTextCount-1].setText("");
             inputTextCount--;
             soundPool.play(buttonSound[3], 1, 1, 1, 0, 1);
-            // 입력된 숫자가 없을 경우, 다음과 같은 text를 출력한다
+            // 입력된 숫자가 없을 경우, 다음과 같은 text를 출력한다.
         } else {
             Toast.makeText(getApplicationContext(), "숫자를 입력해 주세요", Toast.LENGTH_SHORT).show();
         }
     }
 
-    // btnNum 클릭 시 실행할 메소드이다.
+    /**
+    * btnNum 클릭 시 실행할 메소드이다.
+    * */
     private void btnNumClick(View view) {
         if(inputTextCount < 3) {
             Button button = findViewById(view.getId());
-            //버튼에 있는 숫자값을 받아온다.
+            // 버튼에 있는 숫자값을 받아온다.
             inputTextView[inputTextCount].setText(button.getText().toString());
-            //중복된 숫자를 입력받을 수 없기 때문에 한 번 눌린 버튼은 못 누르게 한다.
+            // 중복된 숫자를 입력받을 수 없기 때문에 한 번 눌린 버튼은 못 누르게 한다.
             button.setEnabled(false);
             inputTextCount++;
             soundPool.play(buttonSound[2], 1,1, 1, 0, 1);
         }
-        //숫자 3개 누르고 더 누르려고 할 때 알림 뜬다.
+        // 숫자 3개 누르고 더 누르려고 할 때 알림 뜬다.
         else {
             Toast.makeText(getApplicationContext(), "히트 버튼을 눌러주세요.", Toast.LENGTH_SHORT).show();
         }
     }
 
-    // 입력된 값과 정답 값을 비교하는 메소드이다.
+    /**
+    * 입력된 값과 정답 값을 비교하는 메소드이다.
+    * */
     private int[] getCountCheck(int[] comNumbers, int[] userNumbers){
         int [] setCount = new int[2];
         for (int i = 0; i < comNumbers.length; i++){
@@ -194,18 +209,22 @@ public class MainActivity extends AppCompatActivity {
         return setCount;
     }
 
-    // 정답 값을 생성하는 메소드이다.
+    /**
+    * 정답 값을 생성하는 메소드이다.
+    * */
     public int[] getComNumbers() {
         int[] setComNumbers = new int[3];
         // for문을 돌려서 랜덤 숫자 3개를 setComNumbers에 넣는다.
         for (int i = 0; i < setComNumbers.length; i++) {
-            // i->0, 1, 2일때 랜덤 숫자 생성한다.
-            // 0부터 9까지의 숫자가 setComNumbers에 들어간다.
+            /**
+             *  i ->0, 1, 2일때 랜덤 숫자 생성한다.
+             *  0부터 9까지의 숫자가 setComNumbers에 들어간다.
+             */
             setComNumbers[i] = new Random().nextInt(10);
-            //배열에 같은 숫자가 들어가면 안 되기 때문에
+            // 배열에 같은 숫자가 들어가면 안 되기 때문에
             for (int j = 0; i < i; i++) {
                 if (setComNumbers[i] == setComNumbers[j]) {
-                    //만약에 같으면 랜덤숫자를 다시 받아야 하기 때문에 for문을 다시 돌게끔 한다.
+                    // 만약에 같으면 랜덤숫자를 다시 받아야 하기 때문에 for문을 다시 돌게끔 한다.
                     i--;
                     break;
                 }
@@ -215,7 +234,9 @@ public class MainActivity extends AppCompatActivity {
         return setComNumbers;
     }
 
-    // 사운드 파일을 실행시키기 위해 필요한 메소드이다.
+    /**
+    * 사운드 파일을 실행시키기 위해 필요한 메소드이다.
+    * */
     protected void onStart(){
         super.onStart();
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
@@ -237,8 +258,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * 리소스를 해제하는 메소드이다.
+     * */
     @Override
-    // 리소스를 해제하는 메소드이다.
     protected void onStop(){
         super.onStop();
         soundPool.release();
