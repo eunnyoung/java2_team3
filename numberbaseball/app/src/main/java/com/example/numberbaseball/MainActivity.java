@@ -23,12 +23,15 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity {
 
     // 랜덤으로 정해진 정수 3개 넣을 수 있는 배열이다.
-    int[] comNumbers = new int[3];
-    int inputTextCount = 0;
+    int[] randomNum = new int[3];
+    // 내가 숫자를 몇 번 눌렀는지 카운트 세는 int형 변수
+    int inputNumCount = 0;
+    // hit 버튼을 몇 번 눌렀는지 카운트 세는 int형 변수
     int hitCount = 1;
 
-    // 랜덤 숫자 3개를 보여주는 텍스트뷰이다.
-    TextView[] inputTextView = new TextView[3];
+    // 내가 누른 숫자 3개를 보여주는 텍스트뷰이다.
+    TextView[] clickNum = new TextView[3];
+    // 내가 누를 수 있는 숫자 버튼(0~9)
     Button[] btnNum = new Button[10];
 
     ImageButton btnBackSpace;
@@ -38,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     ScrollView scrollView;
 
     SoundPool soundPool;
-    int[] buttonSound = new int[5];
+    int[] btnsound = new int[5];
 
     /**
     * 버튼들이 클릭되었을 때 실행할 메소드들을 지정한 메소드이다.
@@ -47,10 +50,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        comNumbers = getComNumbers();
+        randomNum = getrandomNum();
 
-        for (int i = 0; i < inputTextView.length; i++) {
-            inputTextView[i] = findViewById(R.id.input_text_view_0 + i);
+        for (int i = 0; i < clickNum.length; i++) {
+            clickNum[i] = findViewById(R.id.input_text_view_0 + i);
         }
 
         for (int i = 0; i < btnNum.length; i++) {
@@ -93,60 +96,70 @@ public class MainActivity extends AppCompatActivity {
     * btnHit 클릭 시 실행할 메소드이다.
     * */
     private void btnHitClick(){
-        // 선택된 숫자가 3개 미만일 경우에 실행할 조건문이다.
-        if (inputTextCount < 3) {
+        // 선택된 숫자가 3개 미만일 경우에 다음과 같은 Text가 뜨도록 한다.
+        if (inputNumCount < 3) {
             Toast.makeText(getApplicationContext(), "숫자를 입력해 주세요", Toast.LENGTH_SHORT).show();
         // 선택된 숫자가 3개일 경우에 실행할 조건문이다.
         } else {
-            int[] userNumbers = new int[3];
+            int[] userNum = new int[3];
 
-            for (int i = 0; i < userNumbers.length; i++) {
-                userNumbers[i] = Integer.parseInt(inputTextView[i].getText().toString());
+            for (int i = 0; i < userNum.length; i++) {
+                userNum[i] = Integer.parseInt(clickNum[i].getText().toString());
             }
-
+            /*
+            * getCountCheck 메소드에서 strike와 ball에 대해 카운트 되어있던 것을
+            * countCheck에 다시 넣는다
+            * */
             int[] countCheck = new int[2];
-            countCheck = getCountCheck(comNumbers, userNumbers);
+            countCheck = getCountCheck(randomNum, userNum);
             Log.e("btnHit", "countCheck = S : " + countCheck[0] + " B : " + countCheck[1]);
 
-            String resultCount = getCountString(userNumbers, countCheck);
+            String resultCount = getCountString(userNum, countCheck);
 
+            /*
+            * setText는 기존에 있는 내용을 지우고 새롭게 셋팅해주는 메소드
+            * append는 기존 내용을 유지한채 뒤에 내용을 붙이는 메소드
+            * */
             if (hitCount == 1) {
                 resultTextView.setText(resultCount + "\n");
             } else {
                 resultTextView.append(resultCount + "\n");
             }
 
+            /*
+            * Strike가 3개 나오면 hit count를 1로 초기화 하고 새로운 랜덤 숫자 3개를 만든다.*/
             if (countCheck[0] == 3) {
                 hitCount = 1;
-                comNumbers = getComNumbers();
+                randomNum = getrandomNum();
             } else {
                 hitCount++;
             }
 
             scrollView.fullScroll(View.FOCUS_DOWN);
 
-            for (int i =0; i< inputTextView.length; i++){
+            for (int i =0; i< clickNum.length; i++){
                 btnBackSpaceClick();
             }
 
-            inputTextCount = 0;
+            inputNumCount = 0;
         }
     }
 
     /**
     * 입력된 값과 정답 값을 비교한 결과를 텍스트로 출력하는 메소드이다.
     * */
-    private String getCountString(int[] userNumbers, int[] countCheck){
+    private String getCountString(int[] userNum, int[] countCheck){
         String resultCount;
 
+        // Strike의 카운트가 3일 때
         if (countCheck[0] == 3) {
-            resultCount = hitCount + "  [" + userNumbers[0] + " " + userNumbers[1] + " " + userNumbers[2]
+            resultCount = hitCount + "  [" + userNum[0] + " " + userNum[1] + " " + userNum[2]
                     + "] 아웃입니다.";
-            soundPool.play(buttonSound[0], 1, 1, 1, 0, 1);
+            soundPool.play(btnsound[0], 1, 1, 1, 0, 1);
         } else {
-            resultCount = hitCount + "  [" + userNumbers[0] + " " + userNumbers[1] + " " + userNumbers[2]
+            resultCount = hitCount + "  [" + userNum[0] + " " + userNum[1] + " " + userNum[2]
                     + "] s: " + countCheck[0] + " B : " + countCheck[1];
-            soundPool.play(buttonSound[4], 1, 1, 1, 0, 1);
+            soundPool.play(btnsound[4], 1, 1, 1, 0, 1);
         }
         return resultCount;
     }
@@ -156,14 +169,14 @@ public class MainActivity extends AppCompatActivity {
     * */
     private void btnBackSpaceClick(){
         // 입력된 숫자가 있을 경우에 실행할 조건문이다.
-        if(inputTextCount > 0){
-            // Text를 int로 형변환한다.
-            int buttonEnableCount = Integer.parseInt(inputTextView[inputTextCount-1].getText().toString());
-            // 숫자버튼이 선택되기 이전 상태로 돌아간다.
-            btnNum[buttonEnableCount].setEnabled(true);
-            inputTextView[inputTextCount-1].setText("");
-            inputTextCount--;
-            soundPool.play(buttonSound[3], 1, 1, 1, 0, 1);
+        if(inputNumCount > 0){
+            // 눌렀던 버튼의 숫자를 string형으로 받고 Int형으로 변환한다
+            int btnEnableNum = Integer.parseInt(clickNum[inputNumCount-1].getText().toString());
+            // 숫자를 지우면 눌렸던 버튼을 다시 누를 수 있도록 재활성화 한다.
+            btnNum[btnEnableNum].setEnabled(true);
+            clickNum[inputNumCount-1].setText("");
+            inputNumCount--;
+            soundPool.play(btnsound[3], 1, 1, 1, 0, 1);
             // 입력된 숫자가 없을 경우, 다음과 같은 text를 출력한다.
         } else {
             Toast.makeText(getApplicationContext(), "숫자를 입력해 주세요", Toast.LENGTH_SHORT).show();
@@ -174,14 +187,14 @@ public class MainActivity extends AppCompatActivity {
     * btnNum 클릭 시 실행할 메소드이다.
     * */
     private void btnNumClick(View view) {
-        if(inputTextCount < 3) {
+        if(inputNumCount < 3) {
             Button button = findViewById(view.getId());
             // 버튼에 있는 숫자값을 받아온다.
-            inputTextView[inputTextCount].setText(button.getText().toString());
+            clickNum[inputNumCount].setText(button.getText().toString());
             // 중복된 숫자를 입력받을 수 없기 때문에 한 번 눌린 버튼은 못 누르게 한다.
             button.setEnabled(false);
-            inputTextCount++;
-            soundPool.play(buttonSound[2], 1,1, 1, 0, 1);
+            inputNumCount++;
+            soundPool.play(btnsound[2], 1,1, 1, 0, 1);
         }
         // 숫자 3개 누르고 더 누르려고 할 때 알림 뜬다.
         else {
@@ -190,18 +203,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-    * 입력된 값과 정답 값을 비교하는 메소드이다.
+    * 입력된 값과 정답 값(랜덤 숫자)을 비교하여 strike와 ball을 카운트하는 메소드이다.
+     * @param randomNum > 정답 값(랜덤 숫자)
+     * @param userNum > 유저가 입력한 값
     * */
-    private int[] getCountCheck(int[] comNumbers, int[] userNumbers){
+    private int[] getCountCheck(int[] randomNum, int[] userNum){
+        // Strike와 Ball에 대한 카운트가 각 인덱스에 카운트 되어있는 int형 배열 setCount
         int [] setCount = new int[2];
-        for (int i = 0; i < comNumbers.length; i++){
-            for(int j = 0; j < userNumbers.length; j++){
-                // comNumbers[i] 와 userNumbers[j] 가 다르면 조건문을 실행하지 않고 빠져나간다.
-                if(comNumbers[i] == userNumbers[j]){
+        for (int i = 0; i < randomNum.length; i++){
+            for(int j = 0; j < userNum.length; j++){
+                // randomNum[i] 와 userNum[j] 가 다르면 조건문을 실행하지 않고 빠져나간다.
+                if(randomNum[i] == userNum[j]){
+                    /*
+                    * 랜덤 숫자와 유저 입력 값이 같고, 위치마저 똑같을 때 Strike
+                    * 위치만 다르면 Ball로 카운트를 누적시킨다.
+                    * */
                     if(i == j){
-                        setCount[0]++;
+                        setCount[0]++; //Strike
                     }else {
-                        setCount[1]++;
+                        setCount[1]++; //Ball
                     }
                 }
             }
@@ -212,26 +232,29 @@ public class MainActivity extends AppCompatActivity {
     /**
     * 정답 값을 생성하는 메소드이다.
     * */
-    public int[] getComNumbers() {
-        int[] setComNumbers = new int[3];
-        // for문을 돌려서 랜덤 숫자 3개를 setComNumbers에 넣는다.
-        for (int i = 0; i < setComNumbers.length; i++) {
+    public int[] getrandomNum() {
+        int[] setrandomNum = new int[3];
+        // for문을 돌려서 랜덤 숫자 3개를 setrandomNum에 넣는다.
+        for (int i = 0; i < setrandomNum.length; i++) {
             /**
              *  i ->0, 1, 2일때 랜덤 숫자 생성한다.
-             *  0부터 9까지의 숫자가 setComNumbers에 들어간다.
+             *  0부터 9까지의 숫자가 setrandomNum에 들어간다.
              */
-            setComNumbers[i] = new Random().nextInt(10);
-            // 배열에 같은 숫자가 들어가면 안 되기 때문에
-            for (int j = 0; i < i; i++) {
-                if (setComNumbers[i] == setComNumbers[j]) {
-                    // 만약에 같으면 랜덤숫자를 다시 받아야 하기 때문에 for문을 다시 돌게끔 한다.
+            setrandomNum[i] = new Random().nextInt(10);
+            /*
+            * 각 배열에 같은 숫자가 들어가면 안 된다.
+            * 만약에 같으면 랜덤숫자를 다시 받아야 하기 때문에 i를 감소시켜 for문을 다시 돌아 랜덤 숫자를 생성한다.
+            * */
+            for (int j = 0; j < i; j++) {
+                if (setrandomNum[i] == setrandomNum[j]) {
                     i--;
                     break;
                 }
             }
+            Log.e("setrandomNum", "setrandomNum [" + i + "]" + "= " + setrandomNum[i]);
         }
-        Log.e("setComNumbers", "setComNumbers = " + setComNumbers[0] + ", " + setComNumbers[1] + ", " + setComNumbers[2]);
-        return setComNumbers;
+        Log.e("setrandomNum", "setrandomNum = " + setrandomNum[0] + ", " + setrandomNum[1] + ", " + setrandomNum[2]);
+        return setrandomNum;
     }
 
     /**
@@ -239,6 +262,7 @@ public class MainActivity extends AppCompatActivity {
     * */
     protected void onStart(){
         super.onStart();
+        //SDK의 버전이 롤리팝 보다 클 때
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
             AudioAttributes audioAttributes = new AudioAttributes.Builder()
                     .setUsage(AudioAttributes.USAGE_GAME)
@@ -253,16 +277,15 @@ public class MainActivity extends AppCompatActivity {
             soundPool = new SoundPool(6, AudioManager.STREAM_MUSIC, 0);
         }
 
-        for (int i = 0; i < buttonSound.length ; i++){
-            buttonSound[i] = soundPool.load(getApplicationContext(), R.raw.button1 + i, 1);
+        for (int i = 0; i < btnsound.length ; i++){
+            btnsound[i] = soundPool.load(getApplicationContext(), R.raw.button1 + i, 1);
         }
     }
 
     /**
-     * 리소스를 해제하는 메소드이다.
+     * 사운드 리소스를 해제하는 메소드이다.
      * */
     @Override
-    // 리소스를 해제하는 메소드이다.
     protected void onStop(){
         super.onStop();
         soundPool.release();
